@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: v_matches
+    description: "Flattened match records from BRONZE.RAW_MATCHES payloads"
+    columns:
+      - name: match_id
+        tests:
+          - not_null
+
+  - name: matches_latest
+    description: "Latest snapshot per match_id (incremental merge)"
+    columns:
+      - name: match_id
+        tests:
+          - not_null
+          - unique
+      - name: utc_date
+        tests:
+          - not_null
+      - name: status
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['SCHEDULED', 'TIMED', 'IN_PLAY', 'PAUSED', 'FINISHED', 'POSTPONED', 'SUSPENDED', 'CANCELLED']
+
+  - name: teams
+    description: "Deduped teams dimension derived from matches_latest"
+    columns:
+      - name: team_id
+        tests:
+          - not_null
+          - unique
+      - name: name
+        tests:
+          - not_null

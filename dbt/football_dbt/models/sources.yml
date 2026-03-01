@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: bronze
+    database: "FOOTBALL_DB"
+    schema: BRONZE
+    tables:
+      - name: raw_matches
+      - name: raw_competitions
+      - name: raw_manifests

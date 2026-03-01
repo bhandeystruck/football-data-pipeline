@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: team_form_last5
+    description: "Last-5 finished match form by team"
+    columns:
+      - name: competition_code
+        tests: [not_null]
+      - name: team_id
+        tests: [not_null]
+      - name: games_played_last5
+        tests: [not_null]
+
+  - name: league_table_snapshot
+    description: "Season-to-date league table computed from finished matches"
+    columns:
+      - name: competition_code
+        tests: [not_null]
+      - name: season_id
+        tests: [not_null]
+      - name: team_id
+        tests: [not_null]
+      - name: points
+        tests: [not_null]
+      - name: rank
+        tests: [not_null]
