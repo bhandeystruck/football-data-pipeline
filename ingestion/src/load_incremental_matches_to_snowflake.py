@@ -1,4 +1,5 @@
 import re
+import json
 
 from .logger import get_logger
 from .minio_reader import list_objects, get_json_object
@@ -32,6 +33,15 @@ def main():
 
     if not data_keys:
         logger.info(f"No incremental match files found in MinIO with prefix: {prefix}")
+
+        # Print metrics JSON as last line (Airflow XCom-safe)
+        print(json.dumps({
+            "prefix": prefix,
+            "files_discovered": 0,
+            "files_to_load": 0,
+            "data_files_loaded": 0,
+            "manifests_loaded": 0,
+        }))
         return
 
     # ✅ Load-state: skip already loaded data files (and manifests indirectly)
@@ -87,6 +97,15 @@ def main():
             logger.warning(f"Manifest missing for {data_key} (expected {expected_manifest_key})")
 
     logger.info(f"✅ Loaded incremental: data_files={loaded_data}, manifests={loaded_manifests}")
+
+    # Print metrics JSON as last line (Airflow XCom-safe)
+    print(json.dumps({
+        "prefix": prefix,
+        "files_discovered": len(data_keys),
+        "files_to_load": len(data_keys_to_load),
+        "data_files_loaded": loaded_data,
+        "manifests_loaded": loaded_manifests,
+    }))
 
 
 if __name__ == "__main__":

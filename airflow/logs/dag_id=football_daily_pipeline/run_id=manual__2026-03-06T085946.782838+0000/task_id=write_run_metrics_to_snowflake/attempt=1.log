@@ -1,0 +1,25 @@
+[2026-03-06T09:00:18.504+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-03-06T09:00:18.524+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: football_daily_pipeline.write_run_metrics_to_snowflake manual__2026-03-06T08:59:46.782838+00:00 [queued]>
+[2026-03-06T09:00:18.529+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: football_daily_pipeline.write_run_metrics_to_snowflake manual__2026-03-06T08:59:46.782838+00:00 [queued]>
+[2026-03-06T09:00:18.529+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 3
+[2026-03-06T09:00:18.538+0000] {taskinstance.py:2330} INFO - Executing <Task(PythonOperator): write_run_metrics_to_snowflake> on 2026-03-06 08:59:46.782838+00:00
+[2026-03-06T09:00:18.548+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:62 DeprecationWarning: This process (pid=667) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2026-03-06T09:00:18.546+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'football_daily_pipeline', 'write_run_metrics_to_snowflake', 'manual__2026-03-06T08:59:46.782838+00:00', '--job-id', '59', '--raw', '--subdir', 'DAGS_FOLDER/football_daily_pipeline.py', '--cfg-path', '/tmp/tmpi7r2tm7r']
+[2026-03-06T09:00:18.549+0000] {standard_task_runner.py:64} INFO - Started process 670 to run task
+[2026-03-06T09:00:18.549+0000] {standard_task_runner.py:91} INFO - Job 59: Subtask write_run_metrics_to_snowflake
+[2026-03-06T09:00:18.593+0000] {task_command.py:426} INFO - Running <TaskInstance: football_daily_pipeline.write_run_metrics_to_snowflake manual__2026-03-06T08:59:46.782838+00:00 [running]> on host b92385dc1f3b
+[2026-03-06T09:00:18.658+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='data-engineering' AIRFLOW_CTX_DAG_ID='football_daily_pipeline' AIRFLOW_CTX_TASK_ID='write_run_metrics_to_snowflake' AIRFLOW_CTX_EXECUTION_DATE='2026-03-06T08:59:46.782838+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-03-06T08:59:46.782838+00:00'
+[2026-03-06T09:00:18.659+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-03-06T09:00:18.686+0000] {connection.py:408} INFO - Snowflake Connector for Python Version: 3.11.0, Python Version: 3.12.4, Platform: Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.36
+[2026-03-06T09:00:18.687+0000] {connection.py:1258} INFO - This connection is in OCSP Fail Open Mode. TLS Certificates would be checked for validity and revocation status. Any other Certificate Revocation related exceptions or OCSP Responder failures would be disregarded in favor of connectivity.
+[2026-03-06T09:00:19.501+0000] {cursor.py:1149} INFO - Number of results in first chunk: 1
+[2026-03-06T09:00:19.621+0000] {cursor.py:1149} INFO - Number of results in first chunk: 1
+[2026-03-06T09:00:20.207+0000] {cursor.py:1149} INFO - Number of results in first chunk: 1
+[2026-03-06T09:00:20.208+0000] {connection.py:773} INFO - closed
+[2026-03-06T09:00:20.253+0000] {connection.py:779} INFO - No async queries seem to be running, deleting session
+[2026-03-06T09:00:20.305+0000] {python.py:237} INFO - Done. Returned value was: None
+[2026-03-06T09:00:20.306+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-03-06T09:00:20.313+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=football_daily_pipeline, task_id=write_run_metrics_to_snowflake, run_id=manual__2026-03-06T08:59:46.782838+00:00, execution_date=20260306T085946, start_date=20260306T090018, end_date=20260306T090020
+[2026-03-06T09:00:20.368+0000] {local_task_job_runner.py:243} INFO - Task exited with return code 0
+[2026-03-06T09:00:20.380+0000] {taskinstance.py:3503} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2026-03-06T09:00:20.384+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

@@ -1,0 +1,43 @@
+[2026-03-06T08:38:12.748+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-03-06T08:38:12.775+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: football_daily_pipeline.dbt_run manual__2026-03-06T08:32:56.570656+00:00 [queued]>
+[2026-03-06T08:38:12.782+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: football_daily_pipeline.dbt_run manual__2026-03-06T08:32:56.570656+00:00 [queued]>
+[2026-03-06T08:38:12.782+0000] {taskinstance.py:2306} INFO - Starting attempt 2 of 3
+[2026-03-06T08:38:12.793+0000] {taskinstance.py:2330} INFO - Executing <Task(BashOperator): dbt_run> on 2026-03-06 08:32:56.570656+00:00
+[2026-03-06T08:38:12.800+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'football_daily_pipeline', 'dbt_run', 'manual__2026-03-06T08:32:56.570656+00:00', '--job-id', '38', '--raw', '--subdir', 'DAGS_FOLDER/football_daily_pipeline.py', '--cfg-path', '/tmp/tmpvx5v10ti']
+[2026-03-06T08:38:12.801+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:62 DeprecationWarning: This process (pid=477) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2026-03-06T08:38:12.802+0000] {standard_task_runner.py:91} INFO - Job 38: Subtask dbt_run
+[2026-03-06T08:38:12.802+0000] {standard_task_runner.py:64} INFO - Started process 478 to run task
+[2026-03-06T08:38:12.850+0000] {task_command.py:426} INFO - Running <TaskInstance: football_daily_pipeline.dbt_run manual__2026-03-06T08:32:56.570656+00:00 [running]> on host 3cb54ffe9a83
+[2026-03-06T08:38:12.925+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='data-engineering' AIRFLOW_CTX_DAG_ID='football_daily_pipeline' AIRFLOW_CTX_TASK_ID='dbt_run' AIRFLOW_CTX_EXECUTION_DATE='2026-03-06T08:32:56.570656+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-03-06T08:32:56.570656+00:00'
+[2026-03-06T08:38:12.926+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-03-06T08:38:12.937+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2026-03-06T08:38:12.938+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'export DBT_PROFILES_DIR=/opt/***/repo/dbt && cd /opt/***/repo/dbt/football_dbt && dbt run']
+[2026-03-06T08:38:12.956+0000] {subprocess.py:86} INFO - Output:
+[2026-03-06T08:38:14.397+0000] {subprocess.py:93} INFO - [0m08:38:14  Running with dbt=1.11.7
+[2026-03-06T08:38:15.067+0000] {subprocess.py:93} INFO - [0m08:38:15  Registered adapter: snowflake=1.9.1
+[2026-03-06T08:38:15.481+0000] {subprocess.py:93} INFO - [0m08:38:15  Found 5 models, 17 data tests, 3 sources, 503 macros
+[2026-03-06T08:38:15.484+0000] {subprocess.py:93} INFO - [0m08:38:15
+[2026-03-06T08:38:15.484+0000] {subprocess.py:93} INFO - [0m08:38:15  Concurrency: 4 threads (target='dev')
+[2026-03-06T08:38:15.485+0000] {subprocess.py:93} INFO - [0m08:38:15
+[2026-03-06T08:38:16.209+0000] {subprocess.py:93} INFO - [0m08:38:16  1 of 5 START sql view model SILVER.v_matches ................................... [RUN]
+[2026-03-06T08:38:16.511+0000] {subprocess.py:93} INFO - [0m08:38:16  1 of 5 OK created sql view model SILVER.v_matches .............................. [[32mSUCCESS 1[0m in 0.30s]
+[2026-03-06T08:38:16.514+0000] {subprocess.py:93} INFO - [0m08:38:16  2 of 5 START sql incremental model SILVER.matches_latest ....................... [RUN]
+[2026-03-06T08:38:18.702+0000] {subprocess.py:93} INFO - [0m08:38:18  2 of 5 OK created sql incremental model SILVER.matches_latest .................. [[32mSUCCESS 291[0m in 2.19s]
+[2026-03-06T08:38:18.706+0000] {subprocess.py:93} INFO - [0m08:38:18  3 of 5 START sql table model GOLD.league_table_snapshot ........................ [RUN]
+[2026-03-06T08:38:18.707+0000] {subprocess.py:93} INFO - [0m08:38:18  4 of 5 START sql table model GOLD.team_form_last5 .............................. [RUN]
+[2026-03-06T08:38:18.708+0000] {subprocess.py:93} INFO - [0m08:38:18  5 of 5 START sql incremental model SILVER.teams ................................ [RUN]
+[2026-03-06T08:38:19.474+0000] {subprocess.py:93} INFO - [0m08:38:19  3 of 5 OK created sql table model GOLD.league_table_snapshot ................... [[32mSUCCESS 1[0m in 0.76s]
+[2026-03-06T08:38:19.629+0000] {subprocess.py:93} INFO - [0m08:38:19  4 of 5 OK created sql table model GOLD.team_form_last5 ......................... [[32mSUCCESS 1[0m in 0.92s]
+[2026-03-06T08:38:21.082+0000] {subprocess.py:93} INFO - [0m08:38:21  5 of 5 OK created sql incremental model SILVER.teams ........................... [[32mSUCCESS 20[0m in 2.37s]
+[2026-03-06T08:38:21.515+0000] {subprocess.py:93} INFO - [0m08:38:21
+[2026-03-06T08:38:21.516+0000] {subprocess.py:93} INFO - [0m08:38:21  Finished running 2 incremental models, 2 table models, 1 view model in 0 hours 0 minutes and 6.03 seconds (6.03s).
+[2026-03-06T08:38:21.563+0000] {subprocess.py:93} INFO - [0m08:38:21
+[2026-03-06T08:38:21.564+0000] {subprocess.py:93} INFO - [0m08:38:21  [32mCompleted successfully[0m
+[2026-03-06T08:38:21.565+0000] {subprocess.py:93} INFO - [0m08:38:21
+[2026-03-06T08:38:21.566+0000] {subprocess.py:93} INFO - [0m08:38:21  Done. PASS=5 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=5
+[2026-03-06T08:38:23.515+0000] {subprocess.py:97} INFO - Command exited with return code 0
+[2026-03-06T08:38:23.516+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-03-06T08:38:23.536+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=football_daily_pipeline, task_id=dbt_run, run_id=manual__2026-03-06T08:32:56.570656+00:00, execution_date=20260306T083256, start_date=20260306T083812, end_date=20260306T083823
+[2026-03-06T08:38:23.553+0000] {local_task_job_runner.py:243} INFO - Task exited with return code 0
+[2026-03-06T08:38:23.567+0000] {taskinstance.py:3503} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-03-06T08:38:23.569+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

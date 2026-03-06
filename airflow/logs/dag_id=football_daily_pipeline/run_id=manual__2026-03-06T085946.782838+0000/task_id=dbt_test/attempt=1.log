@@ -1,0 +1,67 @@
+[2026-03-06T09:00:10.991+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-03-06T09:00:11.008+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: football_daily_pipeline.dbt_test manual__2026-03-06T08:59:46.782838+00:00 [queued]>
+[2026-03-06T09:00:11.012+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: football_daily_pipeline.dbt_test manual__2026-03-06T08:59:46.782838+00:00 [queued]>
+[2026-03-06T09:00:11.012+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 3
+[2026-03-06T09:00:11.020+0000] {taskinstance.py:2330} INFO - Executing <Task(BashOperator): dbt_test> on 2026-03-06 08:59:46.782838+00:00
+[2026-03-06T09:00:11.029+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:62 DeprecationWarning: This process (pid=619) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2026-03-06T09:00:11.027+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'football_daily_pipeline', 'dbt_test', 'manual__2026-03-06T08:59:46.782838+00:00', '--job-id', '58', '--raw', '--subdir', 'DAGS_FOLDER/football_daily_pipeline.py', '--cfg-path', '/tmp/tmphmth4mw0']
+[2026-03-06T09:00:11.029+0000] {standard_task_runner.py:64} INFO - Started process 622 to run task
+[2026-03-06T09:00:11.029+0000] {standard_task_runner.py:91} INFO - Job 58: Subtask dbt_test
+[2026-03-06T09:00:11.068+0000] {task_command.py:426} INFO - Running <TaskInstance: football_daily_pipeline.dbt_test manual__2026-03-06T08:59:46.782838+00:00 [running]> on host b92385dc1f3b
+[2026-03-06T09:00:11.126+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='data-engineering' AIRFLOW_CTX_DAG_ID='football_daily_pipeline' AIRFLOW_CTX_TASK_ID='dbt_test' AIRFLOW_CTX_EXECUTION_DATE='2026-03-06T08:59:46.782838+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-03-06T08:59:46.782838+00:00'
+[2026-03-06T09:00:11.127+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-03-06T09:00:11.133+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2026-03-06T09:00:11.134+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'export DBT_PROFILES_DIR=/opt/***/repo/dbt && cd /opt/***/repo/dbt/football_dbt && dbt test']
+[2026-03-06T09:00:11.144+0000] {subprocess.py:86} INFO - Output:
+[2026-03-06T09:00:12.544+0000] {subprocess.py:93} INFO - [0m09:00:12  Running with dbt=1.11.7
+[2026-03-06T09:00:13.201+0000] {subprocess.py:93} INFO - [0m09:00:13  Registered adapter: snowflake=1.9.1
+[2026-03-06T09:00:13.621+0000] {subprocess.py:93} INFO - [0m09:00:13  Found 5 models, 17 data tests, 3 sources, 503 macros
+[2026-03-06T09:00:13.624+0000] {subprocess.py:93} INFO - [0m09:00:13
+[2026-03-06T09:00:13.625+0000] {subprocess.py:93} INFO - [0m09:00:13  Concurrency: 4 threads (target='dev')
+[2026-03-06T09:00:13.626+0000] {subprocess.py:93} INFO - [0m09:00:13
+[2026-03-06T09:00:14.338+0000] {subprocess.py:93} INFO - [0m09:00:14  1 of 17 START test accepted_values_matches_latest_status__SCHEDULED__TIMED__IN_PLAY__PAUSED__FINISHED__POSTPONED__SUSPENDED__CANCELLED  [RUN]
+[2026-03-06T09:00:14.339+0000] {subprocess.py:93} INFO - [0m09:00:14  2 of 17 START test not_null_league_table_snapshot_competition_code ............. [RUN]
+[2026-03-06T09:00:14.340+0000] {subprocess.py:93} INFO - [0m09:00:14  4 of 17 START test not_null_league_table_snapshot_rank ......................... [RUN]
+[2026-03-06T09:00:14.340+0000] {subprocess.py:93} INFO - [0m09:00:14  3 of 17 START test not_null_league_table_snapshot_points ....................... [RUN]
+[2026-03-06T09:00:14.620+0000] {subprocess.py:93} INFO - [0m09:00:14  2 of 17 PASS not_null_league_table_snapshot_competition_code ................... [[32mPASS[0m in 0.28s]
+[2026-03-06T09:00:14.624+0000] {subprocess.py:93} INFO - [0m09:00:14  1 of 17 PASS accepted_values_matches_latest_status__SCHEDULED__TIMED__IN_PLAY__PAUSED__FINISHED__POSTPONED__SUSPENDED__CANCELLED  [[32mPASS[0m in 0.28s]
+[2026-03-06T09:00:14.626+0000] {subprocess.py:93} INFO - [0m09:00:14  5 of 17 START test not_null_league_table_snapshot_season_id .................... [RUN]
+[2026-03-06T09:00:14.629+0000] {subprocess.py:93} INFO - [0m09:00:14  6 of 17 START test not_null_league_table_snapshot_team_id ...................... [RUN]
+[2026-03-06T09:00:14.818+0000] {subprocess.py:93} INFO - [0m09:00:14  3 of 17 PASS not_null_league_table_snapshot_points ............................. [[32mPASS[0m in 0.47s]
+[2026-03-06T09:00:14.821+0000] {subprocess.py:93} INFO - [0m09:00:14  4 of 17 PASS not_null_league_table_snapshot_rank ............................... [[32mPASS[0m in 0.48s]
+[2026-03-06T09:00:14.823+0000] {subprocess.py:93} INFO - [0m09:00:14  7 of 17 START test not_null_matches_latest_match_id ............................ [RUN]
+[2026-03-06T09:00:14.826+0000] {subprocess.py:93} INFO - [0m09:00:14  8 of 17 START test not_null_matches_latest_status .............................. [RUN]
+[2026-03-06T09:00:14.838+0000] {subprocess.py:93} INFO - [0m09:00:14  5 of 17 PASS not_null_league_table_snapshot_season_id .......................... [[32mPASS[0m in 0.21s]
+[2026-03-06T09:00:14.843+0000] {subprocess.py:93} INFO - [0m09:00:14  9 of 17 START test not_null_matches_latest_utc_date ............................ [RUN]
+[2026-03-06T09:00:14.860+0000] {subprocess.py:93} INFO - [0m09:00:14  6 of 17 PASS not_null_league_table_snapshot_team_id ............................ [[32mPASS[0m in 0.23s]
+[2026-03-06T09:00:14.948+0000] {subprocess.py:93} INFO - [0m09:00:14  7 of 17 PASS not_null_matches_latest_match_id .................................. [[32mPASS[0m in 0.12s]
+[2026-03-06T09:00:14.950+0000] {subprocess.py:93} INFO - [0m09:00:14  8 of 17 PASS not_null_matches_latest_status .................................... [[32mPASS[0m in 0.12s]
+[2026-03-06T09:00:14.951+0000] {subprocess.py:93} INFO - [0m09:00:14  10 of 17 START test not_null_team_form_last5_competition_code .................. [RUN]
+[2026-03-06T09:00:14.958+0000] {subprocess.py:93} INFO - [0m09:00:14  11 of 17 START test not_null_team_form_last5_games_played_last5 ................ [RUN]
+[2026-03-06T09:00:14.958+0000] {subprocess.py:93} INFO - [0m09:00:14  12 of 17 START test not_null_team_form_last5_team_id ........................... [RUN]
+[2026-03-06T09:00:15.050+0000] {subprocess.py:93} INFO - [0m09:00:15  9 of 17 PASS not_null_matches_latest_utc_date .................................. [[32mPASS[0m in 0.20s]
+[2026-03-06T09:00:15.052+0000] {subprocess.py:93} INFO - [0m09:00:15  13 of 17 START test not_null_teams_name ........................................ [RUN]
+[2026-03-06T09:00:15.145+0000] {subprocess.py:93} INFO - [0m09:00:15  10 of 17 PASS not_null_team_form_last5_competition_code ........................ [[32mPASS[0m in 0.19s]
+[2026-03-06T09:00:15.147+0000] {subprocess.py:93} INFO - [0m09:00:15  14 of 17 START test not_null_teams_team_id ..................................... [RUN]
+[2026-03-06T09:00:15.165+0000] {subprocess.py:93} INFO - [0m09:00:15  11 of 17 PASS not_null_team_form_last5_games_played_last5 ...................... [[32mPASS[0m in 0.20s]
+[2026-03-06T09:00:15.168+0000] {subprocess.py:93} INFO - [0m09:00:15  15 of 17 START test not_null_v_matches_match_id ................................ [RUN]
+[2026-03-06T09:00:15.172+0000] {subprocess.py:93} INFO - [0m09:00:15  12 of 17 PASS not_null_team_form_last5_team_id ................................. [[32mPASS[0m in 0.21s]
+[2026-03-06T09:00:15.181+0000] {subprocess.py:93} INFO - [0m09:00:15  16 of 17 START test unique_matches_latest_match_id ............................. [RUN]
+[2026-03-06T09:00:15.249+0000] {subprocess.py:93} INFO - [0m09:00:15  13 of 17 PASS not_null_teams_name .............................................. [[32mPASS[0m in 0.20s]
+[2026-03-06T09:00:15.251+0000] {subprocess.py:93} INFO - [0m09:00:15  17 of 17 START test unique_teams_team_id ....................................... [RUN]
+[2026-03-06T09:00:15.334+0000] {subprocess.py:93} INFO - [0m09:00:15  16 of 17 PASS unique_matches_latest_match_id ................................... [[32mPASS[0m in 0.15s]
+[2026-03-06T09:00:15.354+0000] {subprocess.py:93} INFO - [0m09:00:15  14 of 17 PASS not_null_teams_team_id ........................................... [[32mPASS[0m in 0.21s]
+[2026-03-06T09:00:15.398+0000] {subprocess.py:93} INFO - [0m09:00:15  17 of 17 PASS unique_teams_team_id ............................................. [[32mPASS[0m in 0.15s]
+[2026-03-06T09:00:15.483+0000] {subprocess.py:93} INFO - [0m09:00:15  15 of 17 PASS not_null_v_matches_match_id ...................................... [[32mPASS[0m in 0.31s]
+[2026-03-06T09:00:15.923+0000] {subprocess.py:93} INFO - [0m09:00:15
+[2026-03-06T09:00:15.924+0000] {subprocess.py:93} INFO - [0m09:00:15  Finished running 17 data tests in 0 hours 0 minutes and 2.30 seconds (2.30s).
+[2026-03-06T09:00:15.969+0000] {subprocess.py:93} INFO - [0m09:00:15
+[2026-03-06T09:00:15.970+0000] {subprocess.py:93} INFO - [0m09:00:15  [32mCompleted successfully[0m
+[2026-03-06T09:00:15.971+0000] {subprocess.py:93} INFO - [0m09:00:15
+[2026-03-06T09:00:15.972+0000] {subprocess.py:93} INFO - [0m09:00:15  Done. PASS=17 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=17
+[2026-03-06T09:00:17.669+0000] {subprocess.py:97} INFO - Command exited with return code 0
+[2026-03-06T09:00:17.670+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-03-06T09:00:17.690+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=football_daily_pipeline, task_id=dbt_test, run_id=manual__2026-03-06T08:59:46.782838+00:00, execution_date=20260306T085946, start_date=20260306T090011, end_date=20260306T090017
+[2026-03-06T09:00:17.734+0000] {local_task_job_runner.py:243} INFO - Task exited with return code 0
+[2026-03-06T09:00:17.749+0000] {taskinstance.py:3503} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-03-06T09:00:17.751+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

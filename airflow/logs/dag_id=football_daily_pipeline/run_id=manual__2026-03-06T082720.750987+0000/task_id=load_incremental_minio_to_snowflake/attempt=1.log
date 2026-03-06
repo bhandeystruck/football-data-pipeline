@@ -1,0 +1,28 @@
+[2026-03-06T08:27:24.534+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-03-06T08:27:24.557+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: football_daily_pipeline.load_incremental_minio_to_snowflake manual__2026-03-06T08:27:20.750987+00:00 [queued]>
+[2026-03-06T08:27:24.562+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: football_daily_pipeline.load_incremental_minio_to_snowflake manual__2026-03-06T08:27:20.750987+00:00 [queued]>
+[2026-03-06T08:27:24.563+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 3
+[2026-03-06T08:27:24.574+0000] {taskinstance.py:2330} INFO - Executing <Task(BashOperator): load_incremental_minio_to_snowflake> on 2026-03-06 08:27:20.750987+00:00
+[2026-03-06T08:27:24.581+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'football_daily_pipeline', 'load_incremental_minio_to_snowflake', 'manual__2026-03-06T08:27:20.750987+00:00', '--job-id', '23', '--raw', '--subdir', 'DAGS_FOLDER/football_daily_pipeline.py', '--cfg-path', '/tmp/tmp50qm7vzt']
+[2026-03-06T08:27:24.583+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:62 DeprecationWarning: This process (pid=196) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2026-03-06T08:27:24.584+0000] {standard_task_runner.py:91} INFO - Job 23: Subtask load_incremental_minio_to_snowflake
+[2026-03-06T08:27:24.584+0000] {standard_task_runner.py:64} INFO - Started process 197 to run task
+[2026-03-06T08:27:24.632+0000] {task_command.py:426} INFO - Running <TaskInstance: football_daily_pipeline.load_incremental_minio_to_snowflake manual__2026-03-06T08:27:20.750987+00:00 [running]> on host 3cb54ffe9a83
+[2026-03-06T08:27:24.691+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='data-engineering' AIRFLOW_CTX_DAG_ID='football_daily_pipeline' AIRFLOW_CTX_TASK_ID='load_incremental_minio_to_snowflake' AIRFLOW_CTX_EXECUTION_DATE='2026-03-06T08:27:20.750987+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-03-06T08:27:20.750987+00:00'
+[2026-03-06T08:27:24.692+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-03-06T08:27:24.701+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2026-03-06T08:27:24.702+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'cd /opt/***/repo && python -m ingestion.src.load_incremental_matches_to_snowflake']
+[2026-03-06T08:27:24.711+0000] {subprocess.py:86} INFO - Output:
+[2026-03-06T08:27:27.363+0000] {subprocess.py:93} INFO - 2026-03-06 08:27:27 | INFO | load_incremental_matches_to_snowflake | Found 6 incremental data files
+[2026-03-06T08:27:27.363+0000] {subprocess.py:93} INFO - 2026-03-06 08:27:27 | INFO | load_incremental_matches_to_snowflake | Already loaded (by prefix): 10
+[2026-03-06T08:27:27.363+0000] {subprocess.py:93} INFO - 2026-03-06 08:27:27 | INFO | load_incremental_matches_to_snowflake | To load now: 1
+[2026-03-06T08:27:27.364+0000] {subprocess.py:93} INFO - 2026-03-06 08:27:27 | INFO | load_incremental_matches_to_snowflake | [1/1] Loading data_key=endpoint=matches/competition=PL/dateFrom=2026-03-05/dateTo=2026-03-13/dt=2026-03-06/run_id=45d930b2-9163-4146-8ede-34e9b8702daf.json
+[2026-03-06T08:27:29.013+0000] {subprocess.py:93} INFO - 2026-03-06 08:27:29 | INFO | bronze_snowflake_loader | Upserted RAW_MATCHES for file_key=endpoint=matches/competition=PL/dateFrom=2026-03-05/dateTo=2026-03-13/dt=2026-03-06/run_id=45d930b2-9163-4146-8ede-34e9b8702daf.json
+[2026-03-06T08:27:31.557+0000] {subprocess.py:93} INFO - 2026-03-06 08:27:31 | INFO | bronze_snowflake_loader | Upserted RAW_MANIFESTS for file_key=endpoint=matches/competition=PL/dateFrom=2026-03-05/dateTo=2026-03-13/dt=2026-03-06/run_id=45d930b2-9163-4146-8ede-34e9b8702daf.manifest.json
+[2026-03-06T08:27:32.520+0000] {subprocess.py:93} INFO - 2026-03-06 08:27:32 | INFO | load_incremental_matches_to_snowflake | ✅ Loaded incremental: data_files=1, manifests=1
+[2026-03-06T08:27:32.658+0000] {subprocess.py:97} INFO - Command exited with return code 0
+[2026-03-06T08:27:32.659+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-03-06T08:27:32.681+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=football_daily_pipeline, task_id=load_incremental_minio_to_snowflake, run_id=manual__2026-03-06T08:27:20.750987+00:00, execution_date=20260306T082720, start_date=20260306T082724, end_date=20260306T082732
+[2026-03-06T08:27:32.734+0000] {local_task_job_runner.py:243} INFO - Task exited with return code 0
+[2026-03-06T08:27:32.751+0000] {taskinstance.py:3503} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-03-06T08:27:32.754+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

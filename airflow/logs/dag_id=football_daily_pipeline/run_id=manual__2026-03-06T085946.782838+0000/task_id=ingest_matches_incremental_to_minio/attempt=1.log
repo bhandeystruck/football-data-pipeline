@@ -1,0 +1,27 @@
+[2026-03-06T08:59:48.096+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-03-06T08:59:48.122+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: football_daily_pipeline.ingest_matches_incremental_to_minio manual__2026-03-06T08:59:46.782838+00:00 [queued]>
+[2026-03-06T08:59:48.126+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: football_daily_pipeline.ingest_matches_incremental_to_minio manual__2026-03-06T08:59:46.782838+00:00 [queued]>
+[2026-03-06T08:59:48.126+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 3
+[2026-03-06T08:59:48.134+0000] {taskinstance.py:2330} INFO - Executing <Task(BashOperator): ingest_matches_incremental_to_minio> on 2026-03-06 08:59:46.782838+00:00
+[2026-03-06T08:59:48.142+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'football_daily_pipeline', 'ingest_matches_incremental_to_minio', 'manual__2026-03-06T08:59:46.782838+00:00', '--job-id', '55', '--raw', '--subdir', 'DAGS_FOLDER/football_daily_pipeline.py', '--cfg-path', '/tmp/tmps__82vhr']
+[2026-03-06T08:59:48.144+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:62 DeprecationWarning: This process (pid=514) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2026-03-06T08:59:48.144+0000] {standard_task_runner.py:91} INFO - Job 55: Subtask ingest_matches_incremental_to_minio
+[2026-03-06T08:59:48.145+0000] {standard_task_runner.py:64} INFO - Started process 517 to run task
+[2026-03-06T08:59:48.189+0000] {task_command.py:426} INFO - Running <TaskInstance: football_daily_pipeline.ingest_matches_incremental_to_minio manual__2026-03-06T08:59:46.782838+00:00 [running]> on host b92385dc1f3b
+[2026-03-06T08:59:48.255+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='data-engineering' AIRFLOW_CTX_DAG_ID='football_daily_pipeline' AIRFLOW_CTX_TASK_ID='ingest_matches_incremental_to_minio' AIRFLOW_CTX_EXECUTION_DATE='2026-03-06T08:59:46.782838+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-03-06T08:59:46.782838+00:00'
+[2026-03-06T08:59:48.256+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-03-06T08:59:48.266+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2026-03-06T08:59:48.267+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'cd /opt/***/repo && python -m ingestion.src.ingest_matches_incremental']
+[2026-03-06T08:59:48.278+0000] {subprocess.py:86} INFO - Output:
+[2026-03-06T08:59:48.851+0000] {subprocess.py:93} INFO - 2026-03-06 08:59:48 | INFO | ingest_matches_incremental | Targets: ['PL']
+[2026-03-06T08:59:48.851+0000] {subprocess.py:93} INFO - 2026-03-06 08:59:48 | INFO | ingest_matches_incremental | Window: dateFrom=2026-03-05, dateTo=2026-03-13
+[2026-03-06T08:59:48.851+0000] {subprocess.py:93} INFO - 2026-03-06 08:59:48 | INFO | ingest_matches_incremental | Fetching matches for competition=PL ...
+[2026-03-06T08:59:49.856+0000] {subprocess.py:93} INFO - 2026-03-06 08:59:49 | INFO | ingest_matches_incremental | Saved 1 matches to s3://football-bronze/endpoint=matches/competition=PL/dateFrom=2026-03-05/dateTo=2026-03-13/dt=2026-03-06/run_id=5991f83a-fd61-4795-a161-d138735d10d1.json
+[2026-03-06T08:59:49.866+0000] {subprocess.py:93} INFO - 2026-03-06 08:59:49 | INFO | ingest_matches_incremental | Wrote manifest to s3://football-bronze/endpoint=matches/competition=PL/dateFrom=2026-03-05/dateTo=2026-03-13/dt=2026-03-06/run_id=5991f83a-fd61-4795-a161-d138735d10d1.manifest.json
+[2026-03-06T08:59:49.867+0000] {subprocess.py:93} INFO - 2026-03-06 08:59:49 | INFO | ingest_matches_incremental | ✅ Incremental matches ingestion complete.
+[2026-03-06T08:59:49.913+0000] {subprocess.py:97} INFO - Command exited with return code 0
+[2026-03-06T08:59:49.913+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-03-06T08:59:49.932+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=football_daily_pipeline, task_id=ingest_matches_incremental_to_minio, run_id=manual__2026-03-06T08:59:46.782838+00:00, execution_date=20260306T085946, start_date=20260306T085948, end_date=20260306T085949
+[2026-03-06T08:59:49.963+0000] {local_task_job_runner.py:243} INFO - Task exited with return code 0
+[2026-03-06T08:59:49.981+0000] {taskinstance.py:3503} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-03-06T08:59:49.988+0000] {local_task_job_runner.py:222} INFO - ::endgroup::
