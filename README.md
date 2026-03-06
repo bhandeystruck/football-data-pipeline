@@ -2,9 +2,8 @@ Football Data Engineering Pipeline (football-data.org → MinIO → Snowflake �
 
 Production-style data engineering pipeline that ingests football match data from the football-data.org REST API, lands immutable raw JSON in MinIO (Bronze), loads raw JSON into Snowflake (Bronze), models curated Silver/Gold analytics layers with dbt (including tests), and orchestrates the full workflow on a schedule using Airflow. Basic run-metrics observability is stored in Snowflake.
 
-=====================================================================
+
 WHAT’S IMPLEMENTED
-=====================================================================
 
 1) Source → Bronze (MinIO)
 - Ingest /competitions
@@ -102,9 +101,9 @@ Metrics include:
 
 The incremental loader prints a final JSON line to stdout, which Airflow captures via XCom.
 
-=====================================================================
+
 REPOSITORY STRUCTURE
-=====================================================================
+
 
 - infra/
   - docker-compose.yml (MinIO + Airflow + Postgres)
@@ -122,9 +121,9 @@ REPOSITORY STRUCTURE
   - profiles.yml (repo-local dbt profiles used in Airflow containers)
   - football_dbt/ (dbt project: models, macros, tests)
 
-=====================================================================
+
 LOCAL RUNBOOK (MANUAL)
-=====================================================================
+
 
 A) Start infra services (MinIO + Airflow + Postgres)
 - Run from infra/ directory:
@@ -139,9 +138,9 @@ B) Daily manual update (outside Airflow)
 C) Airflow (preferred)
 - Trigger football_daily_pipeline or let schedule run.
 
-=====================================================================
+
 SNOWFLAKE ACCESS NOTES (DASHBOARDS / QUERIES)
-=====================================================================
+
 
 If you see “Insufficient privileges to operate on table …” in Snowsight, you need:
 - SELECT on SILVER and GOLD tables/views for your current role, OR
@@ -151,9 +150,9 @@ If you see “Insufficient privileges to operate on table …” in Snowsight, y
 A recommended next improvement is to create a read-only analyst role (e.g., FOOTBALL_ANALYST_ROLE)
 and use that for Snowsight dashboards/BI tools.
 
-=====================================================================
+
 NEXT PLANNED ITEMS
-=====================================================================
+
 
 - Build Snowflake-native dashboards in Snowsight (charts + dashboard tiles)
 - Add Metabase later (hosted) for external BI sharing
