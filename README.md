@@ -1,291 +1,162 @@
-# Football Data Engineering Pipeline (football-data.org → MinIO → Snowflake → dbt)
+Football Data Engineering Pipeline (football-data.org → MinIO → Snowflake → dbt → Airflow)
 
-Production-style data engineering pipeline that ingests football match data from the football-data.org REST API, lands immutable raw JSON in MinIO (Bronze), loads raw JSON into Snowflake (Bronze), and models curated Silver/Gold analytics layers with dbt (including automated tests).
+Production-style data engineering pipeline that ingests football match data from the football-data.org REST API, lands immutable raw JSON in MinIO (Bronze), loads raw JSON into Snowflake (Bronze), models curated Silver/Gold analytics layers with dbt (including tests), and orchestrates the full workflow on a schedule using Airflow. Basic run-metrics observability is stored in Snowflake.
 
-This repository is built to be replayable, idempotent, and ready for orchestration (Airflow planned next).
+=====================================================================
+WHAT’S IMPLEMENTED
+=====================================================================
 
----
+1) Source → Bronze (MinIO)
+- Ingest /competitions
+- Ingest /competitions/{code}/matches incrementally (rolling window)
+- Backfill /competitions/{code}/matches in chunks (season-to-date range)
+- Store each payload as immutable raw JSON in MinIO
+- Write a companion .manifest.json next to each match payload with metadata:
+  run_id, params, fetched_at_utc, record_count, object key, etc.
 
-## What’s implemented
+MinIO key patterns (examples)
+- endpoint=competitions/dt=YYYY-MM-DD/run_id=<uuid>.json
+- endpoint=matches/competition=PL/dateFrom=YYYY-MM-DD/dateTo=YYYY-MM-DD/dt=YYYY-MM-DD/run_id=<uuid>.json
+- endpoint=matches_backfill/competition=PL/dateFrom=YYYY-MM-DD/dateTo=YYYY-MM-DD/dt=YYYY-MM-DD/run_id=<uuid>.json
+- corresponding manifest: same key with .manifest.json
 
-### Source → Bronze (MinIO)
-- Ingest `/competitions`
-- Ingest `/competitions/{code}/matches` incrementally (yesterday → next 7 days)
-- Backfill `/competitions/{code}/matches` in chunks (season-to-date)
-- Store each payload as immutable JSON in MinIO
-- Write a companion `.manifest.json` next to each match payload with metadata (run_id, params, fetched_at_utc, record_count, etc.)
+---------------------------------------------------------------------
 
-### Bronze (Snowflake)
-- Store payloads in VARIANT columns:
-  - `FOOTBALL_DB.BRONZE.RAW_COMPETITIONS`
-  - `FOOTBALL_DB.BRONZE.RAW_MATCHES`
-  - `FOOTBALL_DB.BRONZE.RAW_MANIFESTS`
-- Idempotent loads via state table:
-  - `FOOTBALL_DB.BRONZE.LOAD_STATE` (tracks loaded MinIO `FILE_KEY`s)
+2) Bronze (Snowflake)
+Raw payloads are stored as VARIANT in Snowflake Bronze tables:
 
-### Silver (dbt)
-- `SILVER.v_matches` (view): flattens `RAW_MATCHES.PAYLOAD:matches` to one row per match
-- `SILVER.matches_latest` (incremental merge): latest snapshot per `match_id` (handles match updates)
-- `SILVER.teams` (incremental merge): deduped teams dimension (unique `team_id`)
+- FOOTBALL_DB.BRONZE.RAW_COMPETITIONS
+- FOOTBALL_DB.BRONZE.RAW_MATCHES
+- FOOTBALL_DB.BRONZE.RAW_MANIFESTS
 
-### Gold (dbt)
-- `GOLD.team_form_last5`: last 5 finished matches per team (W/D/L, goals, points)
-- `GOLD.league_table_snapshot`: season-to-date league table (points, GD, rank)
+Idempotent loading is enforced using:
 
-### Data quality (dbt)
-- `dbt test` with not-null/unique/accepted-values checks (all passing)
+- FOOTBALL_DB.BRONZE.LOAD_STATE  (tracks loaded FILE_KEY)
 
----
+Idempotent loaders:
+- load_incremental_matches_to_snowflake: loads only new endpoint=matches/... objects
+- load_backfill_matches_to_snowflake: loads only new endpoint=matches_backfill/... objects
 
-## Architecture
+---------------------------------------------------------------------
 
-football-data.org API  
-→ MinIO (Bronze object storage)  
-→ Snowflake (Bronze raw tables)  
-→ dbt (Silver/Gold transformations + tests)
+3) Silver (dbt)
+Curated, typed analytics-ready models:
 
-Important note:
-Snowflake cannot access `localhost` MinIO directly (Snowflake runs in the cloud). For local development, a Python loader moves data from MinIO into Snowflake.
+- SILVER.v_matches (view)
+  Flattens RAW_MATCHES.PAYLOAD:matches to one row per match.
 
----
+- SILVER.matches_latest (incremental merge)
+  Maintains the latest snapshot per match_id to capture match updates (status/score changes).
 
-## Repository Structure
+- SILVER.teams (incremental merge)
+  Deduped teams dimension derived from matches_latest.
 
-- `infra/`  
-  Docker compose for MinIO (Airflow will be added later)
+---------------------------------------------------------------------
 
-- `ingestion/`  
-  Python ingestion scripts (API → MinIO)  
-  Python loaders (MinIO → Snowflake)  
-  Load-state logic for idempotency
+4) Gold (dbt)
+Dashboard-ready marts:
 
-- `dbt/football_dbt/`  
-  dbt project (Silver/Gold models, tests, macros)
+- GOLD.team_form_last5
+  Last 5 finished matches per team (W/D/L, goals for/against, points).
 
-- `docs/`, `dashboards/`  
-  Reserved for diagrams/BI assets (optional)
+- GOLD.league_table_snapshot
+  Season-to-date league table (rank, points, GD, as_of_utc).
 
----
+---------------------------------------------------------------------
 
-## Prerequisites
+5) Airflow Orchestration (Docker, LocalExecutor, Postgres metadata DB)
+Airflow runs in Docker using LocalExecutor and Postgres for Airflow metadata.
 
-- Docker Desktop
-- Python 3.11+
-- Snowflake account
-- football-data.org API token
+Daily DAG: football_daily_pipeline (scheduled at 02:00 Nepal time)
+1) ingest_matches_incremental_to_minio
+2) load_incremental_minio_to_snowflake (idempotent via LOAD_STATE)
+3) dbt run
+4) dbt test
+5) write_run_metrics_to_snowflake
 
----
-
-## Local Setup
-
-### 1) Start MinIO
-```bash
-cd infra
-docker compose up -d
-```
-
-MinIO Console:
-- http://localhost:9001
-
-Create bucket:
-- `football-bronze`
-
----
-
-## Configuration
-
-### Root `.env` (NOT committed)
-Create a `.env` at repository root (do not commit). Example keys:
-
-MinIO:
-- `MINIO_ENDPOINT=http://localhost:9000`
-- `MINIO_ACCESS_KEY=...`
-- `MINIO_SECRET_KEY=...`
-- `MINIO_BRONZE_BUCKET=football-bronze`
-- `MINIO_REGION=us-east-1`
-
-football-data.org:
-- `FOOTBALL_DATA_API_TOKEN=...`
-- `TARGET_COMPETITION_CODES=PL`
-
-Backfill:
-- `BACKFILL_COMPETITION_CODE=PL`
-- `BACKFILL_START_DATE=2025-08-15`
-- `BACKFILL_END_DATE=2026-02-28`
-- `BACKFILL_CHUNK_DAYS=30`
-
-Snowflake:
-- `SNOWFLAKE_ACCOUNT=...` (example: kl18145.ap-south-1.aws)
-- `SNOWFLAKE_USER=FOOTBALL_PIPELINE_USER`
-- `SNOWFLAKE_PASSWORD=...`
-- `SNOWFLAKE_ROLE=FOOTBALL_PIPELINE_ROLE`
-- `SNOWFLAKE_WAREHOUSE=FOOTBALL_WH`
-- `SNOWFLAKE_DATABASE=FOOTBALL_DB`
-
----
-
-## Snowflake Setup (one-time)
-
-Create:
-- Warehouse: `FOOTBALL_WH`
-- Database: `FOOTBALL_DB`
-- Schemas: `BRONZE`, `SILVER`, `GOLD`
-- Role: `FOOTBALL_PIPELINE_ROLE`
-- User: `FOOTBALL_PIPELINE_USER`
-
-Bronze tables:
-- `BRONZE.RAW_COMPETITIONS`
-- `BRONZE.RAW_MATCHES`
-- `BRONZE.RAW_MANIFESTS`
-- `BRONZE.LOAD_STATE` (idempotent file tracking)
-
-Note:
-Local MinIO is not directly reachable by Snowflake. Python loaders move MinIO objects into Snowflake.
-
----
-
-## Python Environments
-
-This repo uses separate virtual environments to avoid dependency conflicts:
-
-- `ingestion/.venv` → ingestion + MinIO/Snowflake loaders  
-- `dbt/.venv` → dbt only
-
----
-
-## Ingestion: API → MinIO (Bronze)
-
-Activate ingestion venv:
-```bash
-cd ingestion
-# Windows:
-.\.venv\Scripts\Activate.ps1
-# Mac/Linux:
-source .venv/bin/activate
-cd ..
-```
-
-Ingest competitions:
-```bash
-python -m ingestion.src.ingest_competitions
-```
-
-Ingest matches (incremental window):
-```bash
-python -m ingestion.src.ingest_matches_incremental
-```
-
-Backfill matches (chunked):
-```bash
-python -m ingestion.src.ingest_matches_backfill
-```
-
----
-
-## Loading: MinIO → Snowflake (Bronze)
-
-### Idempotency via LOAD_STATE
-Snowflake table `FOOTBALL_DB.BRONZE.LOAD_STATE` tracks loaded MinIO object keys. Loaders:
-- list MinIO keys by prefix
-- subtract keys already in LOAD_STATE
-- load only new objects
-- mark loaded keys in LOAD_STATE
-
-Load backfill files (idempotent):
-```bash
-python -m ingestion.src.load_backfill_matches_to_snowflake
-```
-
-Load incremental files (idempotent):
-```bash
-python -m ingestion.src.load_incremental_matches_to_snowflake
-```
-
----
-
-## dbt Setup
-
-Activate dbt venv:
-```bash
-cd dbt
-# Windows:
-.\.venv\Scripts\Activate.ps1
-# Mac/Linux:
-source .venv/bin/activate
-cd football_dbt
-```
-
-dbt profile:
-- Stored in `~/.dbt/profiles.yml`
-- Uses environment variables:
-  `SNOWFLAKE_ACCOUNT`, `SNOWFLAKE_USER`, `SNOWFLAKE_PASSWORD`, `SNOWFLAKE_ROLE`, `SNOWFLAKE_WAREHOUSE`, `SNOWFLAKE_DATABASE`
-
-Windows env loading:
-- dbt does not automatically load `.env`
-- Use `set_env.ps1` in repo root to export `.env` variables into the current PowerShell process:
-```bash
-powershell -ExecutionPolicy Bypass -File .\set_env.ps1
-```
-
-Custom schema macro (important):
-- `macros/generate_schema_name.sql` forces dbt to use exact schemas and prevents schema concatenation (e.g., `SILVER_GOLD`)
-
----
-
-## dbt: Run and Test
-
-From `dbt/football_dbt`:
-
-Run everything:
-```bash
-dbt run
-```
-
-Run only Silver:
-```bash
-dbt run --select models/silver
-```
-
-Run only Gold:
-```bash
-dbt run --select models/gold
-```
-
-Run tests:
-```bash
-dbt test
-```
-
----
-
-## Outputs
-
-Silver:
-- `FOOTBALL_DB.SILVER.v_matches`
-- `FOOTBALL_DB.SILVER.matches_latest`
-- `FOOTBALL_DB.SILVER.teams`
-
-Gold:
-- `FOOTBALL_DB.GOLD.team_form_last5`
-- `FOOTBALL_DB.GOLD.league_table_snapshot`
-
----
-
-## Common one-time ownership/grant notes
-
-If an object (view/table) was created manually earlier, dbt may fail to replace it due to ownership.
-One-time fix is to either:
-- transfer ownership to `FOOTBALL_PIPELINE_ROLE`, or
-- drop the object and let dbt recreate it.
-
----
-
-## Next step (planned): Airflow orchestration
-
-Planned DAG tasks:
-1) ingest API → MinIO
-2) load incremental MinIO → Snowflake using LOAD_STATE
-3) dbt run (Silver + Gold)
+Manual DAG: football_backfill_manual (trigger only, no schedule)
+1) ingest_matches_backfill_to_minio
+2) load_backfill_minio_to_snowflake
+3) dbt run
 4) dbt test
 
-Optional scheduled backfill job for repairs.
+Custom Airflow image:
+- infra/airflow/Dockerfile builds a custom airflow image with required packages installed:
+  boto3, python-dotenv, snowflake-connector-python, dbt-core, dbt-snowflake (versions pinned)
+
+---------------------------------------------------------------------
+
+6) Basic Observability (Snowflake)
+A final Airflow task writes run metrics into:
+
+- FOOTBALL_DB.OPS.PIPELINE_RUN_METRICS
+
+Metrics include:
+- files_discovered
+- files_to_load
+- data_files_loaded
+- manifests_loaded
+- dbt run duration (seconds)
+- dbt test duration (seconds)
+- dbt test pass/fail state
+
+The incremental loader prints a final JSON line to stdout, which Airflow captures via XCom.
+
+=====================================================================
+REPOSITORY STRUCTURE
+=====================================================================
+
+- infra/
+  - docker-compose.yml (MinIO + Airflow + Postgres)
+  - airflow/Dockerfile (custom Airflow image with deps pinned)
+
+- airflow/
+  - dags/ (Airflow DAGs)
+  - logs/
+  - plugins/
+
+- ingestion/
+  - src/ (API ingestion, MinIO utilities, Snowflake loaders, load-state logic)
+
+- dbt/
+  - profiles.yml (repo-local dbt profiles used in Airflow containers)
+  - football_dbt/ (dbt project: models, macros, tests)
+
+=====================================================================
+LOCAL RUNBOOK (MANUAL)
+=====================================================================
+
+A) Start infra services (MinIO + Airflow + Postgres)
+- Run from infra/ directory:
+  docker compose up -d
+
+B) Daily manual update (outside Airflow)
+1) python -m ingestion.src.ingest_matches_incremental
+2) python -m ingestion.src.load_incremental_matches_to_snowflake
+3) dbt run
+4) dbt test
+
+C) Airflow (preferred)
+- Trigger football_daily_pipeline or let schedule run.
+
+=====================================================================
+SNOWFLAKE ACCESS NOTES (DASHBOARDS / QUERIES)
+=====================================================================
+
+If you see “Insufficient privileges to operate on table …” in Snowsight, you need:
+- SELECT on SILVER and GOLD tables/views for your current role, OR
+- switch role to one that owns/has access (e.g., FOOTBALL_PIPELINE_ROLE), OR
+- grant USAGE on DB/SCHEMA + SELECT on ALL/FUTURE TABLES/VIEWs in SILVER/GOLD to your role.
+
+A recommended next improvement is to create a read-only analyst role (e.g., FOOTBALL_ANALYST_ROLE)
+and use that for Snowsight dashboards/BI tools.
+
+=====================================================================
+NEXT PLANNED ITEMS
+=====================================================================
+
+- Build Snowflake-native dashboards in Snowsight (charts + dashboard tiles)
+- Add Metabase later (hosted) for external BI sharing
+- Improve observability for backfill DAG (same metrics pattern)
+- Add alerting on DAG failures (email/Slack)
+- Create FOOTBALL_ANALYST_ROLE for clean read-only access
